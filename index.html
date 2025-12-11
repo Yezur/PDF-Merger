@@ -35,49 +35,51 @@
     .card {
       background: rgba(18, 18, 18, 0.96);
       border-radius: 16px;
-      padding: 1.5rem 1.75rem 2rem;
+      padding: 1.75rem 1.75rem 2rem;
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(12px);
     }
 
-    .app-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.65rem;
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
       margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
     }
 
-    .logo {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.35rem;
-      border-radius: 24px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
-    }
-
-    .logo img {
-      width: 120px;
-      height: 120px;
-      object-fit: contain;
+    .hero img {
+      width: 100%;
       display: block;
+      object-fit: cover;
+      height: 190px;
+      filter: saturate(1.05) contrast(1.02);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(5, 10, 20, 0.7),
+        rgba(5, 10, 20, 0.3)
+      );
+      pointer-events: none;
     }
 
     h1 {
-      margin: 0;
+      margin: 0 0 0.25rem;
       font-size: 1.7rem;
       letter-spacing: 0.03em;
-      text-align: center;
     }
 
     .subtitle {
-      margin: 0;
+      margin: 0 0 1.5rem;
       font-size: 0.95rem;
       opacity: 0.7;
-      text-align: center;
     }
 
     .grid {
@@ -178,6 +180,28 @@
       gap: 0.25rem;
     }
 
+    .panel {
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1.15rem 1.1rem 1.25rem;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02),
+        0 12px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .panel-title {
+      font-size: 1rem;
+      font-weight: 650;
+      letter-spacing: 0.01em;
+      margin: 0 0 0.2rem;
+    }
+
+    .panel-subtitle {
+      margin: 0 0 0.9rem;
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
     .btn-icon {
       border: none;
       padding: 0.25rem 0.4rem;
@@ -204,12 +228,6 @@
       flex-direction: column;
       gap: 1rem;
       height: 100%;
-    }
-
-    .section-title {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      margin-bottom: 0.3rem;
     }
 
     .merge-options {
@@ -274,6 +292,7 @@
       font-size: 0.8rem;
       opacity: 0.8;
       min-height: 1.2em;
+      margin-top: 0.5rem;
     }
 
     .status.error {
@@ -313,89 +332,94 @@
     }
   </style>
 </head>
-  <body>
-    <div class="app">
-      <div class="card">
-        <header class="app-header">
-          <div class="logo" aria-hidden="true">
-            <img src="./delucs-logo.svg" alt="Delucs PDF Merger logo" />
+<body>
+  <div class="app">
+    <div class="card">
+      <div class="hero" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1600&q=80"
+          alt="Abstract illustration of documents and merging lines"
+        />
+      </div>
+      <h1>DeLucs PDF Merger</h1>
+      <p class="subtitle">
+        Browser-only PDF merger &mdash; drop your files, reorder them, and
+        download a merged PDF. All processing happens locally in your browser.
+      </p>
+
+      <div class="grid">
+        <!-- Left side: file selection & list -->
+        <div class="panel">
+          <div class="panel-title">Add &amp; order files</div>
+          <p class="panel-subtitle">
+            Drop PDFs, arrange their order, or remove entries before merging.
+          </p>
+
+          <div
+            class="dropzone"
+            id="dropzone"
+            title="Click to select PDFs or drop them here"
+          >
+            <div class="dropzone-title">
+              Click or drop PDF files here
+            </div>
+            <div class="dropzone-hint">
+              Multiple files allowed • Held locally • No upload
+            </div>
           </div>
+          <input
+            type="file"
+            id="fileInput"
+            class="file-input"
+            accept="application/pdf"
+            multiple
+          />
+
+          <div class="file-list-container" id="fileListContainer">
+            <div class="file-list-empty" id="fileListEmpty">
+              No files selected yet. Add at least two PDFs to start.
+            </div>
+            <ul class="file-list" id="fileList" hidden></ul>
+          </div>
+        </div>
+
+        <!-- Right side: merge options & actions -->
+        <div class="controls panel">
           <div>
-            <h1>DeLucs PDF Merger</h1>
-            <p class="subtitle">
-              Browser-only PDF merger &mdash; drop your files, reorder them, and
-              download a merged PDF. All processing happens locally in your
-              browser.
+            <div class="panel-title">Output settings</div>
+            <p class="panel-subtitle">
+              Name the merged file and start the merge when ready.
             </p>
+            <div class="merge-options">
+              <label>
+                File name
+                <input
+                  type="text"
+                  id="outputName"
+                  class="input-text"
+                  value="merged.pdf"
+                />
+              </label>
+            </div>
           </div>
-        </header>
 
-        <div class="grid">
-          <!-- Left side: file selection & list -->
           <div>
-            <div
-              class="dropzone"
-              id="dropzone"
-              title="Click to select PDFs or drop them here"
-            >
-              <div class="dropzone-title">
-                Click or drop PDF files here
-              </div>
-              <div class="dropzone-hint">
-                Multiple files allowed • Held locally • No upload
-              </div>
-            </div>
-            <input
-              type="file"
-              id="fileInput"
-              class="file-input"
-              accept="application/pdf"
-              multiple
-            />
-
-            <div class="file-list-container" id="fileListContainer">
-              <div class="file-list-empty" id="fileListEmpty">
-                No files selected yet. Add at least two PDFs to start.
-              </div>
-              <ul class="file-list" id="fileList" hidden></ul>
-            </div>
+            <button id="mergeButton" class="btn-primary" disabled>
+              <span>Merge PDFs</span>
+              <span id="mergeButtonLabel"></span>
+            </button>
           </div>
 
-          <!-- Right side: merge options & actions -->
-          <div class="controls">
-            <div>
-              <div class="section-title">Output</div>
-              <div class="merge-options">
-                <label>
-                  File name
-                  <input
-                    type="text"
-                    id="outputName"
-                    class="input-text"
-                    value="merged.pdf"
-                  />
-                </label>
-              </div>
-            </div>
-
-            <div>
-              <div class="section-title">Merge</div>
-              <button id="mergeButton" class="btn-primary" disabled>
-                <span>Merge PDFs</span>
-                <span id="mergeButtonLabel"></span>
-              </button>
-            </div>
-
-            <div class="status" id="status"></div>
-          </div>
+          <div class="status" id="status"></div>
         </div>
+      </div>
 
-        <div class="footer">
-          <span class="badge">
-            <span class="badge-dot"></span>
-            client-side only • powered by PDF-lib
-          </span>
-        </div>
+      <div class="footer">
+        <span class="badge">
+          <span class="badge-dot"></span>
+          client-side only • powered by PDF-lib
+        </span>
+      </div>
     </div>
   </div>
 
