@@ -97,8 +97,29 @@
       display: none;
     }
 
-    .file-list-container {
+    .file-summary {
       margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.86rem;
+      padding: 0.55rem 0.8rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #e9e9e9;
+    }
+
+    .file-summary-text {
+      opacity: 0.85;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-list-container {
+      margin-top: 0.75rem;
       max-height: 260px;
       overflow: auto;
       border-radius: 10px;
@@ -318,6 +339,13 @@
             multiple
           />
 
+          <div class="file-summary" id="fileSummary">
+            <span class="file-summary-text" id="fileSummaryText"></span>
+            <button id="clearAllButton" class="btn-icon danger" hidden>
+              Clear all
+            </button>
+          </div>
+
           <div class="file-list-container" id="fileListContainer">
             <div class="file-list-empty" id="fileListEmpty">
               No files selected yet. Add at least two PDFs to start.
@@ -376,6 +404,9 @@
       const fileList = document.getElementById("fileList");
       const fileListContainer = document.getElementById("fileListContainer");
       const fileListEmpty = document.getElementById("fileListEmpty");
+      const fileSummary = document.getElementById("fileSummary");
+      const fileSummaryText = document.getElementById("fileSummaryText");
+      const clearAllButton = document.getElementById("clearAllButton");
       const mergeButton = document.getElementById("mergeButton");
       const mergeButtonLabel = document.getElementById("mergeButtonLabel");
       const outputNameInput = document.getElementById("outputName");
@@ -393,6 +424,13 @@
         return `${val.toFixed(1)} ${units[i]}`;
       }
 
+      function formatMegabytes(bytes) {
+        if (!Number.isFinite(bytes) || bytes <= 0) return "0 MB";
+        const megabytes = bytes / (1024 * 1024);
+        const precision = megabytes >= 10 ? 0 : 1;
+        return `${megabytes.toFixed(precision)} MB`;
+      }
+
       function setStatus(message, type = "") {
         status.textContent = message || "";
         status.classList.remove("error", "success");
@@ -407,6 +445,13 @@
       }
 
       function renderFileList() {
+        const totalBytes = files.reduce((sum, entry) => sum + entry.file.size, 0);
+        const summaryText = `${files.length || 0} file${
+          files.length === 1 ? "" : "s"
+        } • ${formatMegabytes(totalBytes)} total`;
+        fileSummaryText.textContent = summaryText;
+        clearAllButton.hidden = files.length === 0;
+
         if (!files.length) {
           fileList.hidden = true;
           fileListEmpty.hidden = false;
@@ -509,6 +554,13 @@
         if (dtFiles && dtFiles.length) {
           addFilesFromFileList(dtFiles);
         }
+      });
+
+      clearAllButton.addEventListener("click", () => {
+        if (!files.length) return;
+        files = [];
+        renderFileList();
+        setStatus("Cleared all files.");
       });
 
       // File input change
