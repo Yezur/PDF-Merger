@@ -339,9 +339,9 @@
             multiple
           />
 
-          <div class="file-summary" id="fileSummary">
+          <div class="file-summary" id="fileSummary" hidden>
             <span class="file-summary-text" id="fileSummaryText"></span>
-            <button id="clearAllButton" class="btn-icon danger" hidden>
+            <button id="clearAllButton" class="btn-icon danger" type="button" hidden>
               Clear all
             </button>
           </div>
@@ -449,8 +449,11 @@
         const summaryText = `${files.length || 0} file${
           files.length === 1 ? "" : "s"
         } • ${formatMegabytes(totalBytes)} total`;
+
         fileSummaryText.textContent = summaryText;
+        fileSummary.hidden = files.length === 0;
         clearAllButton.hidden = files.length === 0;
+        clearAllButton.disabled = files.length === 0;
 
         if (!files.length) {
           fileList.hidden = true;
