@@ -35,22 +35,49 @@
     .card {
       background: rgba(18, 18, 18, 0.96);
       border-radius: 16px;
-      padding: 1.75rem 1.75rem 2rem;
+      padding: 1.5rem 1.75rem 2rem;
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
       border: 1px solid rgba(255, 255, 255, 0.05);
       backdrop-filter: blur(12px);
     }
 
+    .app-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.65rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    }
+
+    .logo img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      display: block;
+    }
+
     h1 {
-      margin: 0 0 0.25rem;
+      margin: 0;
       font-size: 1.7rem;
       letter-spacing: 0.03em;
+      text-align: center;
     }
 
     .subtitle {
-      margin: 0 0 1.5rem;
+      margin: 0;
       font-size: 0.95rem;
       opacity: 0.7;
+      text-align: center;
     }
 
     .grid {
@@ -286,81 +313,89 @@
     }
   </style>
 </head>
-<body>
-  <div class="app">
-    <div class="card">
-      <h1>DeLucs PDF Merger</h1>
-      <p class="subtitle">
-        Browser-only PDF merger &mdash; drop your files, reorder them, and
-        download a merged PDF. All processing happens locally in your browser.
-      </p>
+  <body>
+    <div class="app">
+      <div class="card">
+        <header class="app-header">
+          <div class="logo" aria-hidden="true">
+            <img src="./delucs-logo.svg" alt="Delucs PDF Merger logo" />
+          </div>
+          <div>
+            <h1>DeLucs PDF Merger</h1>
+            <p class="subtitle">
+              Browser-only PDF merger &mdash; drop your files, reorder them, and
+              download a merged PDF. All processing happens locally in your
+              browser.
+            </p>
+          </div>
+        </header>
 
-      <div class="grid">
-        <!-- Left side: file selection & list -->
-        <div>
-          <div
-            class="dropzone"
-            id="dropzone"
-            title="Click to select PDFs or drop them here"
-          >
-            <div class="dropzone-title">
-              Click or drop PDF files here
+        <div class="grid">
+          <!-- Left side: file selection & list -->
+          <div>
+            <div
+              class="dropzone"
+              id="dropzone"
+              title="Click to select PDFs or drop them here"
+            >
+              <div class="dropzone-title">
+                Click or drop PDF files here
+              </div>
+              <div class="dropzone-hint">
+                Multiple files allowed • Held locally • No upload
+              </div>
             </div>
-            <div class="dropzone-hint">
-              Multiple files allowed • Held locally • No upload
+            <input
+              type="file"
+              id="fileInput"
+              class="file-input"
+              accept="application/pdf"
+              multiple
+            />
+
+            <div class="file-list-container" id="fileListContainer">
+              <div class="file-list-empty" id="fileListEmpty">
+                No files selected yet. Add at least two PDFs to start.
+              </div>
+              <ul class="file-list" id="fileList" hidden></ul>
             </div>
           </div>
-          <input
-            type="file"
-            id="fileInput"
-            class="file-input"
-            accept="application/pdf"
-            multiple
-          />
 
-          <div class="file-list-container" id="fileListContainer">
-            <div class="file-list-empty" id="fileListEmpty">
-              No files selected yet. Add at least two PDFs to start.
+          <!-- Right side: merge options & actions -->
+          <div class="controls">
+            <div>
+              <div class="section-title">Output</div>
+              <div class="merge-options">
+                <label>
+                  File name
+                  <input
+                    type="text"
+                    id="outputName"
+                    class="input-text"
+                    value="merged.pdf"
+                  />
+                </label>
+              </div>
             </div>
-            <ul class="file-list" id="fileList" hidden></ul>
+
+            <div>
+              <div class="section-title">Merge</div>
+              <button id="mergeButton" class="btn-primary" disabled>
+                <span>Merge PDFs</span>
+                <span id="mergeButtonLabel"></span>
+              </button>
+            </div>
+
+            <div class="status" id="status"></div>
           </div>
         </div>
 
-        <!-- Right side: merge options & actions -->
-        <div class="controls">
-          <div>
-            <div class="section-title">Output</div>
-            <div class="merge-options">
-              <label>
-                File name
-                <input
-                  type="text"
-                  id="outputName"
-                  class="input-text"
-                  value="merged.pdf"
-                />
-              </label>
-            </div>
-          </div>
-
-          <div>
-            <div class="section-title">Merge</div>
-            <button id="mergeButton" class="btn-primary" disabled>
-              <span>Merge PDFs</span>
-              <span id="mergeButtonLabel"></span>
-            </button>
-          </div>
-
-          <div class="status" id="status"></div>
+        <div class="footer">
+          <span class="badge">
+            <span class="badge-dot"></span>
+            client-side only • powered by PDF-lib
+          </span>
         </div>
-      </div>
-
-      <div class="footer">
-        <span class="badge">
-          <span class="badge-dot"></span>
-          client-side only • powered by PDF-lib
-        </span>
-      </div>
     </div>
   </div>
 
