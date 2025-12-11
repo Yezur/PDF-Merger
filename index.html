@@ -41,6 +41,35 @@
       backdrop-filter: blur(12px);
     }
 
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+    }
+
+    .hero img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      height: 190px;
+      filter: saturate(1.05) contrast(1.02);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(5, 10, 20, 0.7),
+        rgba(5, 10, 20, 0.3)
+      );
+      pointer-events: none;
+    }
+
     h1 {
       margin: 0 0 0.25rem;
       font-size: 1.7rem;
@@ -289,6 +318,12 @@
 <body>
   <div class="app">
     <div class="card">
+      <div class="hero" aria-hidden="true">
+        <img
+          src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1600&q=80"
+          alt="Abstract illustration of documents and merging lines"
+        />
+      </div>
       <h1>DeLucs PDF Merger</h1>
       <p class="subtitle">
         Browser-only PDF merger &mdash; drop your files, reorder them, and
