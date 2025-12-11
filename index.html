@@ -446,14 +446,17 @@
 
       function renderFileList() {
         const totalBytes = files.reduce((sum, entry) => sum + entry.file.size, 0);
-        const summaryText = `${files.length || 0} file${
-          files.length === 1 ? "" : "s"
-        } • ${formatMegabytes(totalBytes)} total`;
+        const hasFiles = files.length > 0;
+        const summaryText = hasFiles
+          ? `${files.length} file${files.length === 1 ? "" : "s"} • ${formatMegabytes(
+              totalBytes
+            )} total`
+          : "";
 
         fileSummaryText.textContent = summaryText;
-        fileSummary.hidden = files.length === 0;
-        clearAllButton.hidden = files.length === 0;
-        clearAllButton.disabled = files.length === 0;
+        fileSummary.hidden = !hasFiles;
+        clearAllButton.hidden = !hasFiles;
+        clearAllButton.disabled = !hasFiles;
 
         if (!files.length) {
           fileList.hidden = true;
